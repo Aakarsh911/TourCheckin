@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
-import Tour from './pages/Tour';
+import TourDetails from './pages/TourDetails';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 
@@ -14,7 +14,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/tour/:id" element={<Tour />} />
+        <Route path="/tour/:tourId" element={<TourDetails />} />
       </Routes>
     </Router>
   );

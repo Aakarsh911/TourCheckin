@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AddTourModal from '../components/AddTourModal';
 import '../css/Dashboard.css';
+import { Link } from 'react-router-dom';
 
 function Dashboard() {
   const [tours, setTours] = useState([]);
@@ -70,12 +71,14 @@ function Dashboard() {
       ) : tours.length > 0 ? (
         <div className="tour-list">
           {tours.map((tour) => (
-            <div key={tour._id} className="tour-item">
-              <h3>{tour.name}</h3>
-              <p>
-                {new Date(tour.startDate).toLocaleDateString()} - {new Date(tour.endDate).toLocaleDateString()}
-              </p>
-            </div>
+            <Link to={`/tour/${tour._id}`}>
+                <div key={tour._id} className="tour-item">
+                <h3>{tour.name}</h3>
+                <p>
+                    {new Date(tour.startDate).toLocaleDateString()} - {new Date(tour.endDate).toLocaleDateString()}
+                </p>
+                </div>
+            </Link>
           ))}
         </div>
       ) : (

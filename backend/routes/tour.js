@@ -112,25 +112,65 @@ router.post('/create', authenticateToken, async (req, res) => {
     }
 });
 
-
-// Route to add an event to a tour
-router.post('/:tourId/add-event', authenticateToken, async (req, res) => {
-  try {
-    const { name, date } = req.body;
-    const { tourId } = req.params;
-
-    const newEvent = { name, date, participants: [] };
-    const tour = await Tour.findByIdAndUpdate(
-      tourId,
-      { $push: { events: newEvent } },
-      { new: true }
-    );
-
-    res.status(201).json({ message: 'Event added successfully', tour });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error', error });
-  }
+router.get('/my-tours', authenticateToken, async (req, res) => {
+    try {
+      const tours = await Tour.find({ leader: req.user.id });
+      res.json(tours);
+    } catch (error) {
+      console.error('Error fetching tours:', error);
+      res.status(500).json({ message: 'Server error', error });
+    }
 });
+
+
+router.post('/:tourId/add-checkpoint', authenticateToken, async (req, res) => {
+    const { tourId } = req.params;
+    const { name, checkInTime } = req.body;
+  
+    try {
+      // Find the tour by ID
+      const tour = await Tour.findById(tourId);
+      if (!tour) {
+        return res.status(404).json({ message: 'Tour not found' });
+      }
+  
+      // Create the new checkpoint with participants from the tour
+      const newCheckpoint = {
+        name,
+        checkInTime,
+        participants: tour.participants.map(participant => ({
+          participantId: participant._id, // Link each participant ID
+          checkInTime: null, // Initial check-in time is set to null
+        })),
+      };
+  
+      // Add the new checkpoint to the tour's events array
+      tour.events.push(newCheckpoint);
+      await tour.save();
+  
+      res.status(201).json({ message: 'Checkpoint added successfully', tour });
+    } catch (error) {
+      console.error('Error adding checkpoint:', error);
+      res.status(500).json({ message: 'Server error', error });
+    }
+});
+
+router.get('/:tourId', authenticateToken, async (req, res) => {
+    const { tourId } = req.params;
+  
+    try {
+      const tour = await Tour.findById(tourId).populate('events');
+      if (!tour) {
+        return res.status(404).json({ message: 'Tour not found' });
+      }
+  
+      res.json(tour);
+    } catch (error) {
+      console.error('Error fetching tour:', error);
+      res.status(500).json({ message: 'Server error', error });
+    }
+});
+  
 
 // Route to check in a participant for an event
 router.post('/:tourId/:eventId/check-in', authenticateToken, async (req, res) => {
