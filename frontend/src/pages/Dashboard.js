@@ -10,6 +10,14 @@ function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
+  // if not logged in, redirect to login page
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+        navigate('/');
+        }
+    }, [navigate]);
+
   useEffect(() => {
     const fetchTours = async () => {
       try {

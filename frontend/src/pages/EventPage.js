@@ -80,10 +80,12 @@ function EventPage() {
 
   return (
     <div className="event-page">
-      <h1>{event?.name} Checkpoints</h1>
-      <button className="start-checkin-button" onClick={handleStartCheckIn}>
-        <FaCamera /> Start Check-In
-      </button>
+        <div className='event-header'>
+            <h1>{event?.name}</h1>
+            <button className="start-checkin-button" onClick={handleStartCheckIn}>
+                <FaCamera />
+            </button>
+        </div>
 
       {showScanner && (
         <div className="scanner-modal">
@@ -108,7 +110,7 @@ function EventPage() {
               <div className="checkin-details">
                 <p>
                   {participant.checkInTime
-                    ? `Check-In Time: ${new Date(participant.checkInTime).toLocaleString()}`
+                    ? `${new Date(participant.checkInTime).toLocaleString()}`
                     : "Not Checked In"}
                 </p>
               </div>
