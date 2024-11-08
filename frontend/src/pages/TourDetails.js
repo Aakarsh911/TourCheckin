@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import '../css/TourDetails.css';
 
 function TourDetails() {
@@ -49,10 +49,12 @@ function TourDetails() {
       {tour?.events?.length ? (
         <div className="checkpoint-list">
           {tour.events.map((event) => (
-            <div key={event._id} className="checkpoint-item">
-              <h3>{event.name}</h3>
-              <p>Check-In Time: {new Date(event.checkInTime).toLocaleString()}</p>
-            </div>
+            <Link to={`/event/${tourId}/${event._id}`} key={event._id} className="checkpoint-item-link">
+                <div className="checkpoint-item">
+                <h3>{event.name}</h3>
+                <p>Check-In Time: {new Date(event.checkInTime).toLocaleString()}</p>
+                </div>
+            </Link>
           ))}
         </div>
       ) : (

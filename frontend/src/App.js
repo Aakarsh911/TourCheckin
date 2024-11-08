@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import TourDetails from './pages/TourDetails';
+import EventPage from './pages/EventPage';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 
@@ -15,6 +16,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/tour/:tourId" element={<TourDetails />} />
+        <Route path="/event/:tourId/:eventId" element={<EventPage />} />
       </Routes>
     </Router>
   );
