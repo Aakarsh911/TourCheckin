@@ -22,7 +22,7 @@ function Dashboard() {
     const fetchTours = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:8000/api/tour/my-tours', {
+        const response = await fetch('https://tourcheckin.onrender.com/api/tour/my-tours', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();
@@ -40,7 +40,7 @@ function Dashboard() {
   const handleCreateTour = async (tourData) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:8000/api/tour/create', {
+      const response = await fetch('https://tourcheckin.onrender.com/api/tour/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

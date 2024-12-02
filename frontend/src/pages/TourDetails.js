@@ -12,7 +12,7 @@ function TourDetails() {
   useEffect(() => {
     const fetchTour = async () => {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8000/api/tour/${tourId}`, {
+      const response = await fetch(`https://tourcheckin.onrender.com/api/tour/${tourId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await response.json();
@@ -24,7 +24,7 @@ function TourDetails() {
 
   const handleAddCheckpoint = async () => {
     const token = localStorage.getItem('token');
-    const response = await fetch(`http://localhost:8000/api/tour/${tourId}/add-checkpoint`, {
+    const response = await fetch(`https://tourcheckin.onrender.com/api/tour/${tourId}/add-checkpoint`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

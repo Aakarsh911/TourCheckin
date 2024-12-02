@@ -13,7 +13,7 @@ function EventPage() {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/tour/event/${eventId}`);
+        const response = await fetch(`https://tourcheckin.onrender.com/api/tour/event/${eventId}`);
         const data = await response.json();
         console.log('Event data:', data);
         setEvent(data);
@@ -42,7 +42,7 @@ function EventPage() {
         
             try {
                 const token = localStorage.getItem('token');
-                const response = await fetch(`http://localhost:8000/api/tour/${tourId}/check-in`, {
+                const response = await fetch(`https://tourcheckin.onrender.com/api/tour/${tourId}/check-in`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
