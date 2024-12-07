@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { FaCamera, FaCheckCircle } from 'react-icons/fa';
-import QrScanner from 'react-qr-scanner';
 import '../css/EventPage.css';
 
 function EventPage() {
@@ -9,13 +8,13 @@ function EventPage() {
   const [event, setEvent] = useState(null);
   const [participants, setParticipants] = useState([]);
   const [showScanner, setShowScanner] = useState(false);
+  const [cameraStream, setCameraStream] = useState(null);
 
   useEffect(() => {
     const fetchEvent = async () => {
       try {
         const response = await fetch(`https://tourcheckin.onrender.com/api/tour/event/${eventId}`);
         const data = await response.json();
-        console.log('Event data:', data);
         setEvent(data);
         setParticipants(data.participants || []);
       } catch (error) {
@@ -26,84 +25,72 @@ function EventPage() {
     fetchEvent();
   }, [eventId]);
 
-    const handleScan = async (data) => {
-        if (data) {
-            setShowScanner(false);
-            const scannedURL = data.text;
-            const [_, email, name] = scannedURL.match(/checkin\/([^/]+)\/([^/]+)/) || [];
-        
-            if (!email || !name) {
-                console.error("Invalid QR code format");
-                return;
-            }
-            console.log('Scanned Data:', data.text); // Log the entire scanned data
-            console.log('Parsed Email:', email); // Log parsed email
-            console.log('Parsed Name:', name);   // Log parsed name
-        
-            try {
-                const token = localStorage.getItem('token');
-                const response = await fetch(`https://tourcheckin.onrender.com/api/tour/${tourId}/check-in`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ email, name, eventId }),
-                });
-        
-                const result = await response.json();
-                if (response.ok) {
-                    // Update participant list to reflect the new check-in
-                    setParticipants((prevParticipants) =>
-                        prevParticipants.map((participant) =>
-                        participant.participantId === result.participantId ? result : participant
-                        )
-                    );
-                } else {
-                    console.error("Error checking in participant:", result.message);
-                }
-            } catch (error) {
-                console.error("Error during check-in:", error);
-            }
-        }
-    };
-  
-  
+  const handleStartCheckIn = async () => {
+    try {
+      // Request the rear camera
+      const constraints = {
+        video: {
+          facingMode: 'environment', // Use the rear camera
+        },
+      };
 
-  const handleError = (err) => {
-    console.error('QR Scanner Error:', err);
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      setCameraStream(stream);
+      setShowScanner(true);
+    } catch (error) {
+      console.error('Error accessing rear camera:', error);
+      alert('Could not access the rear camera. Please ensure camera permissions are granted on your mobile device.');
+    }
   };
 
-  const handleStartCheckIn = () => {
-    setShowScanner(true);
+  const handleStopScanner = () => {
+    if (cameraStream) {
+      const tracks = cameraStream.getTracks();
+      tracks.forEach((track) => track.stop()); // Stop all tracks to release the camera
+    }
+    setCameraStream(null);
+    setShowScanner(false);
+  };
+
+  const handleScan = (data) => {
+    if (data) {
+      console.log('Scanned Data:', data);
+      handleStopScanner();
+    }
+  };
+
+  const handleError = (err) => {
+    console.error('Camera Error:', err);
   };
 
   return (
     <div className="event-page">
-        <div className='event-header'>
-            <h1>{event?.name}</h1>
-            <button className="start-checkin-button" onClick={handleStartCheckIn}>
-                <FaCamera />
-            </button>
-        </div>
+      <div className="event-header">
+        <h1>{event?.name}</h1>
+        <button className="start-checkin-button" onClick={handleStartCheckIn}>
+          <FaCamera />
+        </button>
+      </div>
 
       {showScanner && (
         <div className="scanner-modal">
-          <QrScanner
-            onScan={handleScan}
-            onError={handleError}
-            style={{ width: '100%' }}
-            constraints={{
-                facingMode: 'environment', // Use rear camera
+          <video
+            autoPlay
+            playsInline
+            ref={(video) => {
+              if (video && cameraStream) {
+                video.srcObject = cameraStream; // Attach the stream to the video element
+              }
             }}
+            style={{ width: '100%' }}
           />
-          <button onClick={() => setShowScanner(false)}>Close Scanner</button>
+          <button onClick={handleStopScanner}>Close Scanner</button>
         </div>
       )}
 
       <div className="participant-list">
         {participants
-          .sort((a, b) => new Date(a.checkInTime) - new Date(b.checkInTime)) // Sort by check-in time
+          .sort((a, b) => new Date(a.checkInTime) - new Date(b.checkInTime))
           .map((participant) => (
             <div key={participant.participantId} className="participant-item">
               <div className="participant-info">
@@ -114,7 +101,7 @@ function EventPage() {
                 <p>
                   {participant.checkInTime
                     ? `${new Date(participant.checkInTime).toLocaleString()}`
-                    : "Not Checked In"}
+                    : 'Not Checked In'}
                 </p>
               </div>
             </div>

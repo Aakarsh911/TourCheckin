@@ -126,6 +126,8 @@ router.get('/my-tours', authenticateToken, async (req, res) => {
 router.post('/:tourId/add-checkpoint', authenticateToken, async (req, res) => {
     const { tourId } = req.params;
     const { name, checkInTime } = req.body;
+
+    console.log("req:" + req.body);
   
     try {
       // Find the tour by ID
@@ -133,6 +135,8 @@ router.post('/:tourId/add-checkpoint', authenticateToken, async (req, res) => {
       if (!tour) {
         return res.status(404).json({ message: 'Tour not found' });
       }
+
+      console.log(checkInTime);
   
       // Create the new checkpoint with participants from the tour
       const newCheckpoint = {
