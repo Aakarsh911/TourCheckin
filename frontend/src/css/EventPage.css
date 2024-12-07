@@ -1,7 +1,8 @@
 .event-page {
-    padding: 20px;
+    width: 100vw;
     font-family: Arial, sans-serif;
     background-color: #f9f9f9;
+    height: 100vh;
   }
   
   h1 {
@@ -36,6 +37,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    margin: 1em;
   }
   
   .participant-item {
@@ -100,5 +102,6 @@
 .event-header {
     display: flex;
     justify-content: space-between;
+    margin: 1em;
 }
   

@@ -8,6 +8,7 @@ const participantSchema = new mongoose.Schema({
 
 const eventSchema = new mongoose.Schema({
   name: { type: String, required: true },
+  checkInTime: { type: Date, required: true },
   participants: [
     {
       participantId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

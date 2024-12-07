@@ -1,8 +1,8 @@
 .tour-details-container {
     display: flex;
     flex-direction: column;
-    padding: 20px;
-    min-height: 100vh;
+    min-width: 100vw;
+    height: 100vh;
     font-family: Arial, sans-serif;
     background-color: #f9f9f9;
   }
@@ -11,8 +11,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 100%;
-    margin-bottom: 20px;
+    margin: 1em;
   }
   
   .tour-details-title {
@@ -21,7 +20,7 @@
   }
   
   .checkpoint-list {
-    width: 100%;
+    margin: 1em;
     display: flex;
     flex-direction: column;
     gap: 10px;

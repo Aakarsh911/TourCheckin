@@ -93,6 +93,9 @@ function EventPage() {
             onScan={handleScan}
             onError={handleError}
             style={{ width: '100%' }}
+            constraints={{
+                facingMode: 'environment', // Use rear camera
+            }}
           />
           <button onClick={() => setShowScanner(false)}>Close Scanner</button>
         </div>

@@ -24,36 +24,54 @@ function TourDetails() {
 
   const handleAddCheckpoint = async () => {
     const token = localStorage.getItem('token');
-    const response = await fetch(`https://tourcheckin.onrender.com/api/tour/${tourId}/add-checkpoint`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ name: checkpointName, checkInTime }),
-    });
-    const updatedTour = await response.json();
-    setTour(updatedTour);
-    setIsModalOpen(false);
+    try {
+      const response = await fetch(`https://tourcheckin.onrender.com/api/tour/${tourId}/add-checkpoint`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ name: checkpointName, checkInTime }),
+      });
+      console.log(checkpointName, checkInTime);
+
+      if (!response.ok) {
+        throw new Error('Failed to add checkpoint');
+      }
+
+      const newCheckpoint = await response.json();
+
+      const updatedResponse = await fetch(`https://tourcheckin.onrender.com/api/tour/${tourId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const updatedTour = await updatedResponse.json();
+      setTour(updatedTour);
+
+      setCheckpointName('');
+      setCheckInTime('');
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error('Error adding checkpoint:', error);
+    }
   };
 
   return (
     <div className="tour-details-container">
-        <div className='tour-details-header'>
-            <h1>{tour?.name} Checkpoints</h1>
-            <button className="add-checkpoint-button" onClick={() => setIsModalOpen(true)}>
-                <i className="fas fa-plus"></i>
-            </button>
-        </div>
+      <div className="tour-details-header">
+        <h1>{tour?.name} Checkpoints</h1>
+        <button className="add-checkpoint-button" onClick={() => setIsModalOpen(true)}>
+          <i className="fas fa-plus"></i>
+        </button>
+      </div>
 
       {tour?.events?.length ? (
         <div className="checkpoint-list">
           {tour.events.map((event) => (
             <Link to={`/event/${tourId}/${event._id}`} key={event._id} className="checkpoint-item-link">
-                <div className="checkpoint-item">
+              <div className="checkpoint-item">
                 <h3>{event.name}</h3>
                 <p>Check-In Time: {new Date(event.checkInTime).toLocaleString()}</p>
-                </div>
+              </div>
             </Link>
           ))}
         </div>
@@ -71,6 +89,7 @@ function TourDetails() {
               value={checkpointName}
               onChange={(e) => setCheckpointName(e.target.value)}
               placeholder="Enter checkpoint name"
+              required
             />
 
             <label>Check-In Time</label>
@@ -78,6 +97,7 @@ function TourDetails() {
               type="datetime-local"
               value={checkInTime}
               onChange={(e) => setCheckInTime(e.target.value)}
+              required
             />
 
             <button onClick={handleAddCheckpoint}>Create Checkpoint</button>

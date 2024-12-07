@@ -10,13 +10,13 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null); // Clear previous errors
+    setError(null);
 
     try {
       const response = await fetch('https://tourcheckin.onrender.com/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
@@ -25,7 +25,6 @@ function Login() {
         throw new Error(data.message || 'Something went wrong');
       }
 
-      // Save JWT token and navigate to dashboard
       localStorage.setItem('token', data.token);
       navigate('/dashboard');
     } catch (error) {
@@ -38,26 +37,34 @@ function Login() {
       <h2>Login</h2>
       {error && <p className="error">{error}</p>}
       <form onSubmit={handleSubmit}>
-        <div>
+        <div className="form-group">
           <label>Email</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your email"
             required
           />
         </div>
-        <div>
+        <div className="form-group">
           <label>Password</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter your password"
             required
           />
         </div>
         <button type="submit">Log In</button>
       </form>
+      <div className="signup-link">
+        <p>
+          Don’t have an account?{' '}
+          <span onClick={() => navigate('/signup')}>Sign Up</span>
+        </p>
+      </div>
     </div>
   );
 }
