@@ -38,8 +38,7 @@ async function createQRCodePDF(participants, leaderEmail) {
   
     for (const participant of participants) {
       doc.addPage();
-      doc.fontSize(18).text(`Participant: ${participant.name}`, 100, 100);
-      doc.text(`Email: ${participant.email}`, 100, 130);
+      doc.fontSize(18).text(`${participant.name}`, 100, 100);
       doc.image(participant.qrCode, { fit: [200, 200], align: 'center', valign: 'center' });
     }
   
