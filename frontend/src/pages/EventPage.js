@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { FaCamera, FaCheckCircle } from 'react-icons/fa';
 import { Html5Qrcode } from 'html5-qrcode';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import '../css/EventPage.css';
 
 function EventPage() {
@@ -10,6 +12,7 @@ function EventPage() {
   const [participants, setParticipants] = useState([]);
   const [showScanner, setShowScanner] = useState(false);
   const [qrScanner, setQrScanner] = useState(null);
+  const cooldownRef = useRef(false); // Cooldown flag
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -20,6 +23,7 @@ function EventPage() {
         setParticipants(data.participants || []);
       } catch (error) {
         console.error("Error fetching event data:", error);
+        toast.error("Failed to fetch event details.");
       }
     };
 
@@ -38,8 +42,14 @@ function EventPage() {
             qrbox: { width: 250, height: 250 },
           },
           (decodedText) => {
-            console.log("QR Code Scanned:", decodedText);
-            handleScan(decodedText);
+            if (!cooldownRef.current) {
+              cooldownRef.current = true; // Activate cooldown
+              console.log("QR Code Scanned:", decodedText);
+              handleScan(decodedText); // Process the scanned QR code
+              setTimeout(() => {
+                cooldownRef.current = false; // Reset cooldown after 2 seconds
+              }, 2000);
+            }
           },
           (errorMessage) => {
             console.error("QR Code Error:", errorMessage);
@@ -51,6 +61,7 @@ function EventPage() {
         .catch((err) => {
           console.error("QR Scanner Error:", err);
           setShowScanner(false);
+          toast.error("Failed to start the scanner.");
         });
     }
 
@@ -67,9 +78,8 @@ function EventPage() {
   }, [showScanner]);
 
   const handleScan = async (decodedText) => {
-    setShowScanner(false);
     if (!decodedText) {
-      alert("Invalid QR Code.");
+      toast.error("Invalid QR Code.");
       return;
     }
 
@@ -77,12 +87,21 @@ function EventPage() {
 
     if (!email || !name) {
       console.error("Invalid QR code format");
-      alert("Invalid QR code format.");
+      toast.error("Invalid QR code format.");
       return;
     }
 
     console.log("Parsed Email:", email);
     console.log("Parsed Name:", name);
+
+    const alreadyCheckedIn = participants.some(
+      (participant) => participant.email === email && participant.checkInTime
+    );
+
+    if (alreadyCheckedIn) {
+      console.log(`${name} is already checked in.`);
+      return; // Do not show any toast for already checked-in participants
+    }
 
     try {
       const token = localStorage.getItem('token');
@@ -104,11 +123,14 @@ function EventPage() {
               : participant
           )
         );
+        toast.success(`${name} checked in successfully!`);
       } else {
         console.error("Error checking in participant:", result.message);
+        toast.error(result.message || "Failed to check in participant.");
       }
     } catch (error) {
       console.error("Error during check-in:", error);
+      toast.error("An error occurred while checking in. Please try again.");
     }
   };
 
@@ -126,6 +148,7 @@ function EventPage() {
 
   return (
     <div className="event-page">
+      <ToastContainer />
       <Link to={`/tour/${tourId}`} className="back">&lt;</Link>
       <div className="event-header">
         <h1>{event?.name}</h1>
