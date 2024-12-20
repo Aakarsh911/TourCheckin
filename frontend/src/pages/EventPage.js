@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { FaCamera, FaCheckCircle } from 'react-icons/fa';
 import { Html5Qrcode } from 'html5-qrcode';
 import '../css/EventPage.css';
@@ -126,6 +126,7 @@ function EventPage() {
 
   return (
     <div className="event-page">
+      <Link to={`/tour/${tourId}`} className="back">&lt;</Link>
       <div className="event-header">
         <h1>{event?.name}</h1>
         <button className="start-checkin-button" onClick={() => setShowScanner(true)}>

@@ -103,5 +103,6 @@
     display: flex;
     justify-content: space-between;
     margin: 1em;
+    margin-top: 0.1em;
 }
   
