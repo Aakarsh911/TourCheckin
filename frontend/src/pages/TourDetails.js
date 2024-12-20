@@ -139,7 +139,7 @@ function TourDetails() {
 
   return (
     <div className="tour-details-container">
-      <Link to="/dashboard" className="back"> &lt;</Link>
+      <Link to="/dashboard" className="back">&lt; Back</Link>
       <div className="tour-details-header">
         <h1>{tour?.name} Checkpoints</h1>
         <button className="add-checkpoint-button" onClick={() => setIsModalOpen(true)}>

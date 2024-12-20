@@ -153,7 +153,7 @@ function EventPage() {
   return (
     <div className="event-page">
       <ToastContainer />
-      <Link to={`/tour/${tourId}`} className="back">&lt;</Link>
+      <Link to={`/tour/${tourId}`} className="back">&lt; Back</Link>
       <div className="event-header">
         <h1>{event?.name}</h1>
         <button className="start-checkin-button" onClick={() => setShowScanner(true)}>
