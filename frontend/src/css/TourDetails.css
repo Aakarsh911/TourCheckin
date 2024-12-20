@@ -147,4 +147,120 @@
     margin-bottom: 0;
     margin-left: 0.5em;
   }
+
+  /* Dropdown styling */
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-button {
+  font-size: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+}
+
+.dropdown-button:hover {
+  color: #007bff;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: black;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  min-width: 150px;
+  z-index: 1000;
+  color: white;
+}
+
+.dropdown-container:hover .dropdown-menu {
+  display: block;
+}
+
+.dropdown-menu button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  background: none;
+  border: none;
+  text-align: left;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.dropdown-menu button:nth-child(1) {
+  border-bottom: 1px solid #333;
+}
+
+.dropdown-menu button:hover {
+  background-color: #f2f2f2;
+  color: #007bff;
+}
+
+/* Tooltip for dropdown buttons */
+.dropdown-menu button:focus {
+  outline: none;
+}
+
+/* Adjust checkpoint item styling to fit dropdown */
+.checkpoint-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.checkpoint-item h3 {
+  font-size: 18px;
+  margin: 0;
+  color: #333;
+  flex-grow: 1;
+}
+
+.checkpoint-item p {
+  font-size: 14px;
+  color: #555;
+  margin: 0;
+}
+
+/* Adjust modal buttons */
+.modal-content button {
+  width: calc(50% - 5px);
+  margin-right: 5px;
+}
+
+.modal-content button:last-child {
+  margin-right: 0;
+}
+
+/* Styling for edit modal to differentiate from add modal */
+.modal-content.edit-modal {
+  border: 2px solid #007bff;
+}
+
+/* Back button adjustment */
+.back {
+  font-size: 24px;
+  background-color: transparent;
+  color: #007bff;
+  border: none;
+  cursor: pointer;
+  margin: 0.2em 0 0 0.5em;
+}
+
+.back:hover {
+  color: #0056b3;
+}
+
   

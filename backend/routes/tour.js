@@ -286,4 +286,57 @@ router.post('/:eventId/check-in', async (req, res) => {
     }
   });
 
+  // Update checkpoint
+router.put('/:tourId/update-checkpoint/:checkpointId', authenticateToken, async (req, res) => {
+  const { tourId, checkpointId } = req.params;
+  const { name, checkInTime } = req.body;
+
+  try {
+    const tour = await Tour.findById(tourId);
+    if (!tour) return res.status(404).json({ message: 'Tour not found' });
+
+    const checkpoint = tour.events.id(checkpointId);
+    if (!checkpoint) return res.status(404).json({ message: 'Checkpoint not found' });
+
+    checkpoint.name = name;
+    checkpoint.checkInTime = checkInTime;
+    await tour.save();
+
+    res.json(tour);
+  } catch (error) {
+    console.error('Error updating checkpoint:', error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
+
+// Delete checkpoint
+router.delete('/:tourId/events/:eventId', authenticateToken, async (req, res) => {
+  const { tourId, eventId } = req.params;
+
+  try {
+    const tour = await Tour.findById(tourId);
+    if (!tour) {
+      return res.status(404).json({ message: 'Tour not found' });
+    }
+
+    const eventIndex = tour.events.findIndex(event => event._id.toString() === eventId);
+
+    if (eventIndex === -1) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    // Remove the event
+    tour.events.splice(eventIndex, 1);
+    await tour.save();
+
+    res.status(200).json({ message: 'Checkpoint deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting checkpoint:', error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
+
+
+
+
 module.exports = router;
