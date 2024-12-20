@@ -37,21 +37,43 @@ function TourDetails() {
         },
         body: JSON.stringify({ name: checkpointName, checkInTime }),
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to add checkpoint');
       }
-
-      const updatedTour = await response.json();
-      setTour(updatedTour);
-
+  
+      const { tour } = await response.json();
+  
+      // Extract the last added checkpoint (assuming it's appended to the end)
+      const newCheckpoint = tour.events[tour.events.length - 1];
+  
+      // Ensure the new checkpoint has the expected properties
+      if (!newCheckpoint.name || !newCheckpoint.checkInTime) {
+        console.error('Incomplete checkpoint data received:', newCheckpoint);
+        toast.error('Failed to add checkpoint. Please try again.');
+        return;
+      }
+  
+      // Update the tour's events state without refreshing the page
+      setTour((prevTour) => ({
+        ...prevTour,
+        events: [...(prevTour.events || []), newCheckpoint],
+      }));
+  
       setCheckpointName('');
       setCheckInTime('');
       setIsModalOpen(false);
+  
+      toast.success('Checkpoint added successfully!', {
+        autoClose: 1000,
+      });
     } catch (error) {
       console.error('Error adding checkpoint:', error);
+      toast.error('An error occurred while adding the checkpoint.');
     }
   };
+  
+  
 
   const handleEditCheckpoint = async () => {
     const token = localStorage.getItem('token');

@@ -336,7 +336,59 @@ router.delete('/:tourId/events/:eventId', authenticateToken, async (req, res) =>
   }
 });
 
+router.put('/:tourId', authenticateToken, async (req, res) => {
+  const { tourId } = req.params;
+  const { name, startDate, endDate } = req.body;
 
+  try {
+      const tour = await Tour.findById(tourId);
+
+      if (!tour) {
+          return res.status(404).json({ message: 'Tour not found' });
+      }
+
+      if (tour.leader.toString() !== req.user.id) {
+          return res.status(403).json({ message: 'Unauthorized to edit this tour' });
+      }
+
+      // Update tour details
+      tour.name = name || tour.name;
+      tour.startDate = startDate || tour.startDate;
+      tour.endDate = endDate || tour.endDate;
+
+      await tour.save();
+
+      res.status(200).json({ message: 'Tour updated successfully', tour });
+  } catch (error) {
+      console.error('Error updating tour:', error);
+      res.status(500).json({ message: 'Server error', error });
+  }
+});
+
+
+// Delete a tour
+router.delete('/:tourId', authenticateToken, async (req, res) => {
+  const { tourId } = req.params;
+
+  try {
+      const tour = await Tour.findById(tourId);
+
+      if (!tour) {
+          return res.status(404).json({ message: 'Tour not found' });
+      }
+
+      if (tour.leader.toString() !== req.user.id) {
+          return res.status(403).json({ message: 'Unauthorized to delete this tour' });
+      }
+
+      await Tour.findByIdAndDelete(tourId);
+
+      res.status(200).json({ message: 'Tour deleted successfully' });
+  } catch (error) {
+      console.error('Error deleting tour:', error);
+      res.status(500).json({ message: 'Server error', error });
+  }
+});
 
 
 module.exports = router;

@@ -123,10 +123,14 @@ function EventPage() {
               : participant
           )
         );
-        toast.success(`${name} checked in successfully!`);
+        toast.success(`${name} checked in successfully!`, {
+          autoClose: 500,
+        });        
       } else {
         console.error("Error checking in participant:", result.message);
-        toast.error(result.message || "Failed to check in participant.");
+        toast.error(result.message || "Failed to check in participant.", {
+          autoClose: 500,
+        });
       }
     } catch (error) {
       console.error("Error during check-in:", error);
