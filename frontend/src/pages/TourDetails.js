@@ -37,43 +37,28 @@ function TourDetails() {
         },
         body: JSON.stringify({ name: checkpointName, checkInTime }),
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to add checkpoint');
       }
-  
+
       const { tour } = await response.json();
-  
-      // Extract the last added checkpoint (assuming it's appended to the end)
-      const newCheckpoint = tour.events[tour.events.length - 1];
-  
-      // Ensure the new checkpoint has the expected properties
-      if (!newCheckpoint.name || !newCheckpoint.checkInTime) {
-        console.error('Incomplete checkpoint data received:', newCheckpoint);
-        toast.error('Failed to add checkpoint. Please try again.');
-        return;
-      }
-  
-      // Update the tour's events state without refreshing the page
+
       setTour((prevTour) => ({
         ...prevTour,
-        events: [...(prevTour.events || []), newCheckpoint],
+        events: [...(prevTour.events || []), tour.events[tour.events.length - 1]],
       }));
-  
+
       setCheckpointName('');
       setCheckInTime('');
       setIsModalOpen(false);
-  
-      toast.success('Checkpoint added successfully!', {
-        autoClose: 1000,
-      });
+
+      toast.success('Checkpoint added successfully!', { autoClose: 1000 });
     } catch (error) {
       console.error('Error adding checkpoint:', error);
       toast.error('An error occurred while adding the checkpoint.');
     }
   };
-  
-  
 
   const handleEditCheckpoint = async () => {
     const token = localStorage.getItem('token');
@@ -111,14 +96,13 @@ function TourDetails() {
   const handleDeleteCheckpoint = async (eventId) => {
     const token = localStorage.getItem('token');
     try {
-      console.log(`Deleting event with ID: ${eventId}`);
       const response = await fetch(`https://tourcheckin.onrender.com/api/tour/${tourId}/events/${eventId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       if (response.ok) {
         setTour((prevTour) => ({
           ...prevTour,
@@ -134,8 +118,6 @@ function TourDetails() {
       toast.error('An error occurred while deleting the checkpoint');
     }
   };
-  
-  
 
   return (
     <div className="tour-details-container">
@@ -153,7 +135,18 @@ function TourDetails() {
             <div className="checkpoint-item" key={event._id}>
               <Link to={`/event/${tourId}/${event._id}`} className="checkpoint-item-link">
                 <h3>{event.name}</h3>
-                <p>Check-In Time: {new Date(event.checkInTime).toLocaleString()}</p>
+                <p>Check-In Time: {new Date(event.checkInTime).toLocaleString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: true,
+                  timeZone: 'UTC',
+                })}
+                </p>
+
+
               </Link>
               <div className="dropdown-container">
                 <button className="dropdown-button">⋮</button>
