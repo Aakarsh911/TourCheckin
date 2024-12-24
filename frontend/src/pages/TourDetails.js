@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import '../css/TourDetails.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FaEllipsisV } from 'react-icons/fa';
 
 function TourDetails() {
   const { tourId } = useParams();
@@ -149,7 +150,9 @@ function TourDetails() {
 
               </Link>
               <div className="dropdown-container">
-                <button className="dropdown-button">⋮</button>
+              <FaEllipsisV
+                  className="dropdown-icon"
+                />
                 <div className="dropdown-menu">
                   <button
                     onClick={() => {
@@ -218,8 +221,8 @@ function TourDetails() {
               required
             />
 
-            <button onClick={handleEditCheckpoint}>Save Changes</button>
-            <button onClick={() => setEditModalOpen(false)}>Cancel</button>
+            <button onClick={handleEditCheckpoint} className="save-button">Save Changes</button>
+            <button onClick={() => setEditModalOpen(false)} className="cancel-button">Cancel</button>
           </div>
         </div>
       )}

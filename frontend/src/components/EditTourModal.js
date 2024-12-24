@@ -30,7 +30,7 @@ function EditTourModal({ tour, onClose, onSave }) {
           onChange={(e) => setEndDate(e.target.value)}
           required
         />
-        <button onClick={handleSave}>Save</button>
+        <button onClick={handleSave} className="save-button">Save</button>
         <button className="cancel-button" onClick={onClose}>
           Cancel
         </button>
