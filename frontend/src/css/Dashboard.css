@@ -1,70 +1,154 @@
 .dashboard-container {
-    display: flex;
-    flex-direction: column;
-    min-width: 100vw;
-    min-height: 100vh;
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
-  }
-  
-  .dashboard-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    margin: 1em;
-  }
-  
-  .dashboard-title {
-    font-size: 24px;
-    color: #333;
-  }
-  
-  .loading,
-  .no-tours {
-    font-size: 18px;
-    color: #888;
-    text-align: left;
-    margin-top: 20px;
-  }
-  
-  .tour-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin: 1em;
-  }
-  
-  .tour-item {
-    background-color: #ffffff;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .tour-item h3 {
-    font-size: 18px;
-    margin: 0;
-    color: #333;
-  }
-  
-  .tour-item p {
-    font-size: 14px;
-    color: #555;
-  }
-  
-  .add-tour-button {
-    font-size: 24px; /* Size of the plus icon */
-    background-color: transparent;
-    color: #007bff;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .add-tour-button:hover {
-    color: #0056b3;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  min-width: 100vw;
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #f3f4f6, #ececec); /* Neutral gradient for better readability */
+  color: #333;
+  overflow-x: hidden;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  background-color: #34495e; /* Dark blue-gray for contrast */
+  color: #fff;
+  border-radius: 0 0 15px 15px;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-header h1 {
+  color: white;
+}
+
+.dashboard-title {
+  font-size: 20px; /* Reduced size for a cleaner look */
+  font-weight: bold;
+  margin: 0;
+}
+
+.add-tour-button {
+  font-size: 16px;
+  padding: 10px 20px;
+  background: linear-gradient(45deg, #ff6f61, #f7c978); /* Vibrant gradient */
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.add-tour-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.add-tour-button:active {
+  transform: translateY(0);
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.tour-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 15px;
+  padding: 15px;
+}
+
+.tour-item {
+  background: linear-gradient(135deg, #ffffff, #ffefd5); /* Soft pastel for better contrast with blue text */
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tour-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.tour-item h3 {
+  font-size: 18px;
+  margin: 0 0 5px 0;
+  color: #34495e; /* Contrasting text color */
+  font-weight: 600;
+}
+
+.tour-item p {
+  font-size: 14px;
+  color: #555;
+  margin: 0;
+}
+
+.dropdown {
+  z-index: 10;
+}
+
+.dropdown-icon {
+  font-size: 18px;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.dropdown-icon:hover {
+  color: #ff6f61; /* Highlight on hover */
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 30px;
+  right: 0;
+  background-color: #fff;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 20;
+}
+
+.dropdown-menu button {
+  width: 100%;
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.dropdown-menu button:hover {
+  background-color: #f3f4f6;
+  color: #ff6f61;
+}
+
+.loading,
+.no-tours {
+  font-size: 16px;
+  color: #7f8c8d;
+  text-align: center;
+  margin-top: 30px;
+}
+
 a {
-    text-decoration: none;
+  text-decoration: none;
+  color: inherit;
+}
+
+@media (max-width: 768px) {
+  .add-tour-button {
+    margin-top: 10px;
+    align-self: center;
+  }
+
+  .tour-list {
+    grid-template-columns: 1fr;
+  }
 }

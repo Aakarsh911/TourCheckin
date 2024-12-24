@@ -1,91 +1,159 @@
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .modal-content {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    width: 80%;
-    max-width: 500px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .close-button {
-    position: absolute;
-    top: -10px;
-    right: 0px;
-    border: none;
-    background: transparent;
-    font-size: 18px;
-    cursor: pointer;
-  }
-  
-  label {
-    margin-top: 15px;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  input[type="text"], input[type="date"], input[type="email"] {
-    padding: 8px;
-    margin-top: 5px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-    margin-bottom: 10px;
-  }
-  
-  .upload-options {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  
-  .upload-options button {
-    padding: 8px 16px;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    background: #f0f0f0;
-  }
-  
-  .upload-options button.active {
-    background: #007bff;
-    color: white;
-  }
-  
-  .participant-entry {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  
-  .add-participant-button, .create-tour-button {
-    padding: 10px;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    margin-top: 10px;
-  }
-  
-  .add-participant-button {
-    background: #007bff;
-    color: white;
-  }
-  
-  .create-tour-button {
-    background: #28a745;
-    color: white;
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: linear-gradient(135deg, #ffffff, #f8f9fa); /* Clean light gradient */
+  width: 90%;
+  max-width: 500px;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+  position: relative;
+  font-family: 'Poppins', sans-serif;
+}
+
+.modal-content h2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #34495e; /* Dark blue-gray for contrast */
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: transparent !important;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  color: #ff6f61 !important;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+  width: auto !important;
+}
+
+.close-button:hover {
+  transform: rotate(90deg);
+  color: #d9534f;
+}
+
+label {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 5px;
+  display: block;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="email"],
+input[type="file"] {
+  width: 90%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  background-color: #fff;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.2s ease;
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus,
+input[type="email"]:focus,
+input[type="file"]:focus {
+  border-color: #ff6f61;
+  outline: none;
+}
+
+.upload-options {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.upload-options button {
+  flex: 1;
+  padding: 10px 15px;
+  font-size: 14px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.upload-options button.active {
+  background: linear-gradient(45deg, #ff6f61, #f7c978); /* Vibrant gradient for active state */
+  color: #fff;
+  font-weight: bold;
+}
+
+.upload-options button:not(.active) {
+  background: #f8f9fa; /* Light neutral for inactive */
+  color: #888;
+}
+
+.upload-options button:hover {
+  transform: translateY(-2px);
+}
+
+.participant-entry {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.participant-entry input {
+  flex: 1;
+}
+
+.add-participant-button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  border: none;
+  border-radius: 20px;
+  background: linear-gradient(45deg, #72d572, #9be15d); /* Fresh green gradient */
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.add-participant-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.create-tour-button {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 20px;
+  background: linear-gradient(45deg, #ff6f61, #f7c978); /* Vibrant gradient */
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.create-tour-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+}
