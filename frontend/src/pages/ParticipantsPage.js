@@ -29,7 +29,7 @@ function ParticipantsPage() {
   return (
     <div className="participants-page">
       <h1>Participants by Score</h1>
-      <Link to={`/dashbaord`} className="back-button">Back</Link>
+      <Link to={`/dashboard`} className="back-button">Back</Link>
       {loading ? (
         <p>Loading participants...</p>
       ) : participants.length > 0 ? (
