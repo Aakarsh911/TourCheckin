@@ -4,6 +4,7 @@ const participantSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },
   qrCode: { type: String, default: '' }, // Stores the QR code URL or data URI
+  score: { type: Number, default: 0 },
 });
 
 const eventSchema = new mongoose.Schema({

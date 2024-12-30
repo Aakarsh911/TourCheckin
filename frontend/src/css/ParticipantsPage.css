@@ -1,0 +1,27 @@
+.participants-page {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  h1 {
+    color: #34495e;
+  }
+  
+  .back-button {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 16px;
+  }
+  
+  .participants-list {
+    margin-top: 20px;
+  }
+  
+  .participant-item {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  

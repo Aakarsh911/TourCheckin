@@ -178,48 +178,47 @@ router.get('/:tourId', authenticateToken, async (req, res) => {
 
 // Route to check in a participant for an event
 router.post('/:tourId/check-in/', authenticateToken, async (req, res) => {
-    const { tourId } = req.params;
-    const { email, name, eventId } = req.body;
+  const { tourId } = req.params;
+  const { email, name, eventId } = req.body;
 
-    console.log('Tour ID:', tourId);  // Log tourId
-    console.log('Event ID:', eventId); // Log eventId
-    console.log('Request Body Email:', email); // Log email from request body
-    console.log('Request Body Name:', name);   // Log name from request body
-  
-    try {
-      const tour = await Tour.findById(tourId);
-      if (!tour) return res.status(404).json({ message: 'Tour not found' });
-  
-      const event = tour.events.id(eventId);
-      if (!event) return res.status(410).json({ message: 'Event not found' });
-  
-      // Find the participant by email and name
+  try {
+    const tour = await Tour.findById(tourId);
+    if (!tour) return res.status(404).json({ message: 'Tour not found' });
 
-      console.log('Event Participants:', event.participants); // Log event participants
+    const event = tour.events.id(eventId);
+    if (!event) return res.status(404).json({ message: 'Event not found' });
 
-      const participant = event.participants.find(
-        (p) => p.name === name
-      );
-  
-      if (!participant) {
-        return res.status(404).json({ message: 'Participant not found' });
-      }
-  
-      // Check if the participant has already been checked in
-      if (participant.checkInTime) {
-        return res.status(400).json({ message: 'Participant already checked in' });
-      }
-  
-      // Set the check-in time
-      participant.checkInTime = new Date();
-      await tour.save();
-  
-      res.status(200).json(participant); // Send updated participant info back
-    } catch (error) {
-      console.error('Error checking in participant:', error);
-      res.status(500).json({ message: 'Server error', error });
+    const participant = event.participants.find(
+      (p) => p.name === name && p.email === email
+    );
+
+    if (!participant) {
+      return res.status(404).json({ message: 'Participant not found' });
     }
-  });
+
+    if (participant.checkInTime) {
+      return res.status(400).json({ message: 'Participant already checked in' });
+    }
+
+    // Set the check-in time
+    participant.checkInTime = new Date();
+
+    // Update score based on check-in position
+    const position = event.participants.filter((p) => p.checkInTime).length + 1;
+
+    const tourParticipant = tour.participants.find((p) => p.email === email);
+    if (tourParticipant) {
+      tourParticipant.score += position;
+    }
+
+    await tour.save();
+    res.status(200).json({ message: 'Check-in successful', participant });
+  } catch (error) {
+    console.error('Error during check-in:', error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
+
 
 // Route to fetch event details including participants
 router.get('/event/:eventId', async (req, res) => {
@@ -389,6 +388,26 @@ router.delete('/:tourId', authenticateToken, async (req, res) => {
       res.status(500).json({ message: 'Server error', error });
   }
 });
+
+
+// Route to fetch participants sorted by score
+router.get('/:tourId/participants-by-score', authenticateToken, async (req, res) => {
+  const { tourId } = req.params;
+
+  try {
+    const tour = await Tour.findById(tourId);
+    if (!tour) {
+      return res.status(404).json({ message: 'Tour not found' });
+    }
+
+    const sortedParticipants = tour.participants.sort((a, b) => a.score - b.score);
+    res.status(200).json(sortedParticipants);
+  } catch (error) {
+    console.error('Error fetching participants by score:', error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
+
 
 
 module.exports = router;

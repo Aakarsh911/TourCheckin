@@ -5,6 +5,7 @@ import EditTourModal from '../components/EditTourModal';
 import '../css/Dashboard.css';
 import { Link } from 'react-router-dom';
 import { FaEllipsisV } from 'react-icons/fa'; // Import icon for dropdown menu
+import { FaListOl } from 'react-icons/fa';
 
 function Dashboard() {
   const [tours, setTours] = useState([]);
@@ -156,6 +157,11 @@ function Dashboard() {
                   <div className="dropdown-menu">
                     <button onClick={() => handleEditTour(tour)}>Edit</button>
                     <button onClick={() => handleDeleteTour(tour._id)}>Delete</button>
+                    <button onClick={() => navigate(`/tour/${tour._id}/participants`)}>
+                    <Link to={`/tour/${tour._id}/participants`} className="leaderboard-icon">
+                      <FaListOl />
+                    </Link>
+                    </button>
                   </div>
                 )}
               </div>
