@@ -196,7 +196,7 @@ router.post('/:tourId/check-in/', authenticateToken, async (req, res) => {
       console.log('Event Participants:', event.participants); // Log event participants
 
       const participant = event.participants.find(
-          (p) => p.name === name && p.email === email
+          (p) => p.name === name
       );
   
       if (!participant) {
