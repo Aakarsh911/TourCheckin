@@ -16,20 +16,22 @@ function EventPage() {
   const cooldownRef = useRef(false); // Cooldown flag
 
   useEffect(() => {
-    const fetchEvent = async () => {
-      try {
-        const response = await fetch(`https://tourcheckin.onrender.com/api/tour/event/${eventId}`);
-        const data = await response.json();
-        setEvent(data);
-        setParticipants(data.participants || []);
-      } catch (error) {
-        console.error("Error fetching event data:", error);
-        toast.error("Failed to fetch event details.");
-      }
-    };
-
-    fetchEvent();
+    fetchUpdatedParticipants();
   }, [eventId]);
+
+  const fetchUpdatedParticipants = async () => {
+    try {
+      const response = await fetch(`https://tourcheckin.onrender.com/api/tour/event/${eventId}`);
+      const data = await response.json();
+      setEvent(data);
+      setParticipants(
+        (data.participants || []).sort((a, b) => new Date(a.checkInTime) - new Date(b.checkInTime))
+      );
+    } catch (error) {
+      console.error("Error fetching updated participants:", error);
+      toast.error("Failed to fetch participants.");
+    }
+  };
 
   useEffect(() => {
     if (showScanner) {
@@ -83,24 +85,15 @@ function EventPage() {
       toast.error("Invalid QR Code.");
       return;
     }
-
+  
     const [_, email, name] = decodedText.match(/checkin\/([^/]+)\/([^/]+)/) || [];
-
+  
     if (!email || !name) {
       console.error("Invalid QR code format");
       toast.error("Invalid QR code format.");
       return;
     }
-
-    const alreadyCheckedIn = participants.some(
-      (participant) => participant.name === name && participant.checkInTime
-    );
-
-    if (alreadyCheckedIn) {
-      console.log(`${name} is already checked in.`);
-      return;
-    }
-
+  
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`https://tourcheckin.onrender.com/api/tour/${tourId}/check-in`, {
@@ -111,18 +104,21 @@ function EventPage() {
         },
         body: JSON.stringify({ name, eventId }),
       });
-
-      const result = await response.json();
+  
       if (response.ok) {
-        setParticipants((prevParticipants) =>
-          prevParticipants.map((participant) =>
-            participant.participantId === result.participantId
-              ? { ...participant, checkInTime: result.checkInTime }
-              : participant
-          )
-        );
+        // Add green border effect to scanner
+        const qrReaderElement = document.getElementById("qr-reader");
+        qrReaderElement.classList.add("scanned");
+  
+        // Remove the green border effect after a short delay
+        setTimeout(() => {
+          qrReaderElement.classList.remove("scanned");
+        }, 1000);
+  
+        fetchUpdatedParticipants(); // Refetch participants to update the list
         toast.success(`${name} checked in successfully!`);
       } else {
+        const result = await response.json();
         toast.error(result.message || "Failed to check in participant.");
       }
     } catch (error) {
@@ -130,6 +126,7 @@ function EventPage() {
       toast.error("An error occurred while checking in. Please try again.");
     }
   };
+  
 
   const handleManualCheckIn = async (participant) => {
     try {
@@ -143,17 +140,11 @@ function EventPage() {
         body: JSON.stringify({ name: participant.name, eventId }),
       });
 
-      const result = await response.json();
       if (response.ok) {
-        setParticipants((prevParticipants) =>
-          prevParticipants.map((p) =>
-            p.participantId === participant.participantId
-              ? { ...p, checkInTime: result.checkInTime }
-              : p
-          )
-        );
+        fetchUpdatedParticipants(); // Refetch participants to update the list
         toast.success(`${participant.name} checked in successfully!`);
       } else {
+        const result = await response.json();
         toast.error(result.message || "Failed to check in participant.");
       }
     } catch (error) {
@@ -203,7 +194,7 @@ function EventPage() {
                 onClick={() => toggleDropdown(participant.participantId)}
               />
               {activeDropdown === participant.participantId && (
-                <div className="dropdown-menu">
+                <div className="dropdown-menu move-left">
                   <button onClick={() => handleManualCheckIn(participant)}>Check In</button>
                 </div>
               )}
