@@ -69,6 +69,11 @@ function Dashboard() {
   };
 
   const handleDeleteTour = async (tourId) => {
+    const confirmDelete = window.confirm('Are you sure you want to delete this tour? This action cannot be undone.');
+    if (!confirmDelete) {
+      return; // Exit if the user cancels the deletion
+    }
+  
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`https://tourcheckin.onrender.com/api/tour/${tourId}`, {
@@ -77,17 +82,20 @@ function Dashboard() {
           Authorization: `Bearer ${token}`,
         },
       });
-
+  
       if (response.ok) {
         setTours((prevTours) => prevTours.filter((tour) => tour._id !== tourId));
+        alert('Tour deleted successfully.');
       } else {
         const result = await response.json();
-        alert(result.message || 'Failed to delete tour');
+        alert(result.message || 'Failed to delete tour.');
       }
     } catch (error) {
       console.error('Error deleting tour:', error);
+      alert('An error occurred while deleting the tour.');
     }
   };
+  
 
   const handleEditTour = (tour) => {
     setSelectedTour(tour);

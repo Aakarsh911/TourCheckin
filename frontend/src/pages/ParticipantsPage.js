@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { FaTrophy } from 'react-icons/fa'; // Import the trophy icon
 import '../css/ParticipantsPage.css';
 
 function ParticipantsPage() {
@@ -37,7 +38,8 @@ function ParticipantsPage() {
           {participants.map((participant, index) => (
             <div key={participant._id} className="participant-item">
               <p>
-                <strong>{index + 1}.</strong> {participant.name} - Score: {participant.score}
+                <strong>{index + 1}.</strong> {participant.name}{' '}
+                {index === 0 && <FaTrophy className="trophy-icon" />} {/* Trophy for the first participant */}
               </p>
             </div>
           ))}

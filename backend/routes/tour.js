@@ -216,7 +216,7 @@ router.post('/:tourId/check-in/', authenticateToken, async (req, res) => {
 
       // Find the participant in the tour-level participants array
       const tourParticipant = tour.participants.find(
-          (p) => p.name === name && p.email === email
+          (p) => p.name === name
       );
 
       if (!tourParticipant) {

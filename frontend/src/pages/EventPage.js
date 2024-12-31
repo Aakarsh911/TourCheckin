@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { FaCamera, FaCheckCircle } from 'react-icons/fa';
+import { FaCamera, FaCheckCircle, FaEllipsisV } from 'react-icons/fa';
 import { Html5Qrcode } from 'html5-qrcode';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,6 +12,7 @@ function EventPage() {
   const [participants, setParticipants] = useState([]);
   const [showScanner, setShowScanner] = useState(false);
   const [qrScanner, setQrScanner] = useState(null);
+  const [activeDropdown, setActiveDropdown] = useState(null); // Track active dropdown
   const cooldownRef = useRef(false); // Cooldown flag
 
   useEffect(() => {
@@ -91,16 +92,13 @@ function EventPage() {
       return;
     }
 
-    console.log("Parsed Email:", email);
-    console.log("Parsed Name:", name);
-
     const alreadyCheckedIn = participants.some(
-      (participant) => participant.email === email && participant.checkInTime
+      (participant) => participant.name === name && participant.checkInTime
     );
 
     if (alreadyCheckedIn) {
       console.log(`${name} is already checked in.`);
-      return; // Do not show any toast for already checked-in participants
+      return;
     }
 
     try {
@@ -111,7 +109,7 @@ function EventPage() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ email, name, eventId }),
+        body: JSON.stringify({ name, eventId }),
       });
 
       const result = await response.json();
@@ -123,14 +121,9 @@ function EventPage() {
               : participant
           )
         );
-        toast.success(`${name} checked in successfully!`, {
-          autoClose: 500,
-        });        
+        toast.success(`${name} checked in successfully!`);
       } else {
-        console.error("Error checking in participant:", result.message);
-        toast.error(result.message || "Failed to check in participant.", {
-          autoClose: 500,
-        });
+        toast.error(result.message || "Failed to check in participant.");
       }
     } catch (error) {
       console.error("Error during check-in:", error);
@@ -138,16 +131,46 @@ function EventPage() {
     }
   };
 
+  const handleManualCheckIn = async (participant) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`https://tourcheckin.onrender.com/api/tour/${tourId}/check-in`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ name: participant.name, eventId }),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        setParticipants((prevParticipants) =>
+          prevParticipants.map((p) =>
+            p.participantId === participant.participantId
+              ? { ...p, checkInTime: result.checkInTime }
+              : p
+          )
+        );
+        toast.success(`${participant.name} checked in successfully!`);
+      } else {
+        toast.error(result.message || "Failed to check in participant.");
+      }
+    } catch (error) {
+      console.error("Error during manual check-in:", error);
+      toast.error("An error occurred while checking in. Please try again.");
+    }
+  };
+
   const handleStopScanner = () => {
     if (qrScanner && qrScanner.isScanning) {
-      qrScanner
-        .stop()
-        .then(() => {
-          console.log("QR Scanner stopped.");
-        })
-        .catch((err) => console.error("Error stopping scanner:", err));
+      qrScanner.stop().catch((err) => console.error("Error stopping scanner:", err));
     }
     setShowScanner(false);
+  };
+
+  const toggleDropdown = (participantId) => {
+    setActiveDropdown((prev) => (prev === participantId ? null : participantId));
   };
 
   return (
@@ -170,23 +193,30 @@ function EventPage() {
       )}
 
       <div className="participant-list">
-        {participants
-          .sort((a, b) => new Date(a.checkInTime) - new Date(b.checkInTime))
-          .map((participant) => (
-            <div key={participant.participantId} className="participant-item">
-              <div className="participant-info">
-                <span>{participant.name}</span>
-                {participant.checkInTime && <FaCheckCircle className="checked-in-icon" />}
-              </div>
-              <div className="checkin-details">
-                <p>
-                  {participant.checkInTime
-                    ? `${new Date(participant.checkInTime).toLocaleString()}`
-                    : "Not Checked In"}
-                </p>
-              </div>
+        {participants.map((participant) => (
+          <div key={participant.participantId} className="participant-item">
+            <div className="participant-info">
+              <span>{participant.name}</span>
+              {participant.checkInTime && <FaCheckCircle className="checked-in-icon" />}
+              <FaEllipsisV
+                className="dropdown-icon"
+                onClick={() => toggleDropdown(participant.participantId)}
+              />
+              {activeDropdown === participant.participantId && (
+                <div className="dropdown-menu">
+                  <button onClick={() => handleManualCheckIn(participant)}>Check In</button>
+                </div>
+              )}
             </div>
-          ))}
+            <div className="checkin-details">
+              <p>
+                {participant.checkInTime
+                  ? `${new Date(participant.checkInTime).toLocaleString()}`
+                  : "Not Checked In"}
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

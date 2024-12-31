@@ -162,3 +162,59 @@
 .back:hover {
   color: #0056b3;
 }
+
+.participant-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  color: #34495e;
+  font-weight: bold;
+  position: relative; /* Parent for dropdown menu */
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 30px;
+  left: 1em;
+  background: black;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  width: 150px;
+  display: none; /* Initially hidden */
+}
+
+.participant-info:hover .dropdown-menu,
+.dropdown-icon:focus + .dropdown-menu {
+  display: block; /* Show when hovered or focused */
+}
+
+.dropdown-icon {
+  font-size: 18px;
+  margin-left: 10px;
+  cursor: pointer;
+  color: #888;
+  transition: color 0.2s;
+}
+
+.dropdown-icon:hover {
+  color: #007bff;
+}
+
+.dropdown-menu button {
+  width: 100%;
+  padding: 10px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  color: white;
+  transition: background-color 0.2s;
+}
+
+.dropdown-menu button:hover {
+  background-color: #f1f1f1;
+  color: #007bff;
+}

@@ -17,11 +17,42 @@
     margin-top: 20px;
   }
   
+  .trophy-icon {
+    color: gold;
+    margin-left: 10px;
+    vertical-align: middle;
+    font-size: 1.2em; /* Adjust the size as needed */
+  }
+  
   .participant-item {
     padding: 10px;
+    background: #f9f9f9;
+    border-radius: 8px;
     margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   }
+  
+  .participants-page h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .back-button {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #007bff;
+    text-decoration: none;
+    font-size: 16px;
+  }
+  
+  .back-button:hover {
+    text-decoration: underline;
+  }
+  
+  .participants-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
   
